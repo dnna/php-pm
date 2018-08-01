@@ -291,7 +291,9 @@ class RequestHandler
             $this->incoming->write($this->createErrorResponse('502 Bad Gateway', 'Slave returned an invalid HTTP response. Maybe the script has called exit() prematurely?'));
         }
         $this->incoming->end();
-        $this->loop->cancelTimer($this->maxExecutionTimer);
+        if($this->maxExecutionTime > 0) {
+            $this->loop->cancelTimer($this->maxExecutionTimer);
+        }
 
         if ($this->slave->getStatus() === Slave::LOCKED) {
             // slave was locked, so mark as closed now.
